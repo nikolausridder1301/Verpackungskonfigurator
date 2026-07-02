@@ -1,0 +1,4 @@
+artikel_id,bezeichnung,laenge_mm,breite_mm,hoehe_mm,gewicht_kg,menge,zerbrechlich
+A-100,Werkzeugkoffer,150,100,80,1.5,12,nein
+B-200,Ersatzteilbox,90,70,45,0.8,24,nein
+C-300,Glasfilter,80,60,40,0.3,6,ja

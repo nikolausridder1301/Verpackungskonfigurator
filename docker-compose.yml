@@ -1,0 +1,17 @@
+# Ein-Klick-Start (Issue #31): docker compose up --build
+# Nach dem initialen Build ist keine Internetverbindung mehr nötig.
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      # Verpackungsstammdaten von außen änderbar; greift nach Neustart des Containers
+      - ./backend/data:/app/data
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend

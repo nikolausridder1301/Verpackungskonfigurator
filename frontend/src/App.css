@@ -1,14 +1,434 @@
-#center {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 1.5rem;
+:root {
+  --karte-bg: #ffffff;
+  --karte-rand: #e2e8f0;
+  --text-gedimmt: #64748b;
+  --akzent: #2563eb;
+  --akzent-dunkel: #1d4ed8;
+  --fehler-bg: #fef2f2;
+  --fehler-rand: #dc2626;
+  --fehler-text: #991b1b;
+  --warn-bg: #fffbeb;
+  --warn-rand: #f59e0b;
+  --warn-text: #92400e;
 }
 
-#center h1 {
-  font-size: clamp(1.6rem, 5vw, 3rem);
-  margin: 0 0 0.75rem;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --karte-bg: #1e2229;
+    --karte-rand: #343a46;
+    --text-gedimmt: #94a3b8;
+    --fehler-bg: #2c1a1a;
+    --fehler-text: #fca5a5;
+    --warn-bg: #2a2316;
+    --warn-text: #fcd34d;
+  }
+}
+
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.app-kopf {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.app-kopf h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+}
+
+.untertitel {
+  color: var(--text-gedimmt);
+  margin: 0.4rem 0 0;
+}
+
+/* --- Upload (Issue #19) --- */
+
+.upload-bereich {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.upload-zone {
+  border: 2px dashed var(--karte-rand);
+  border-radius: 12px;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+  background: var(--karte-bg);
+}
+
+.upload-zone:hover,
+.upload-zone.aktiv {
+  border-color: var(--akzent);
+}
+
+.upload-titel {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+}
+
+.upload-hinweis {
+  color: var(--text-gedimmt);
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* --- Fehler- und Warnboxen (Issues #19, #25, #26) --- */
+
+.fehler-box {
+  background: var(--fehler-bg);
+  border-left: 4px solid var(--fehler-rand);
+  color: var(--fehler-text);
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem;
+  margin-top: 1rem;
+  text-align: left;
+}
+
+.fehler-box ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.warn-box {
+  background: var(--warn-bg);
+  border-left: 4px solid var(--warn-rand);
+  color: var(--warn-text);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  margin: 0.8rem 0;
+  text-align: left;
+}
+
+.warn-box p {
+  margin: 0.2rem 0;
+}
+
+.warn-box.klein {
+  font-size: 0.85rem;
+}
+
+.stabilitaets-banner {
+  background: var(--fehler-bg);
+  border: 2px solid var(--fehler-rand);
+  color: var(--fehler-text);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.2rem;
+  font-size: 1rem;
+}
+
+.stabilitaets-banner ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.2rem;
+}
+
+/* --- Vorschau-Tabelle (Issue #20) --- */
+
+.vorschau h2 {
+  margin: 0 0 0.6rem;
+}
+
+.tabelle-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--karte-rand);
+  border-radius: 10px;
+  background: var(--karte-bg);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.92rem;
+}
+
+th,
+td {
+  padding: 0.55rem 0.8rem;
+  text-align: left;
+  border-bottom: 1px solid var(--karte-rand);
+  white-space: nowrap;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+td.zahl {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.farb-punkt {
+  display: inline-block;
+  width: 0.75em;
+  height: 0.75em;
+  border-radius: 50%;
+  margin-right: 0.45em;
+}
+
+.vorschau-summe {
+  color: var(--text-gedimmt);
+  font-size: 0.9rem;
+}
+
+/* --- Aktionen --- */
+
+.aktionen {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  margin-top: 1.2rem;
+  flex-wrap: wrap;
+}
+
+button {
+  font: inherit;
+  border-radius: 8px;
+  padding: 0.65rem 1.4rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  min-height: 44px; /* Touch-Ziele für Tablet (Issue #28) */
+}
+
+button.primaer {
+  background: var(--akzent);
+  color: #fff;
+  font-weight: 600;
+}
+
+button.primaer:hover:enabled {
+  background: var(--akzent-dunkel);
+}
+
+button.primaer:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button.sekundaer {
+  background: transparent;
+  border-color: var(--karte-rand);
+  color: inherit;
+}
+
+button.sekundaer:hover {
+  border-color: var(--akzent);
+}
+
+/* --- Ladeindikator (Issue #26) --- */
+
+.lade-anzeige {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.spinner {
+  display: inline-block;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 4px solid var(--karte-rand);
+  border-top-color: var(--akzent);
+  border-radius: 50%;
+  animation: drehen 0.9s linear infinite;
+}
+
+@keyframes drehen {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.lade-hinweis {
+  color: var(--warn-text);
+  background: var(--warn-bg);
+  display: inline-block;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+}
+
+/* --- Ergebnisübersicht (Issue #21) --- */
+
+.uebersicht-karten {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.kennzahl {
+  background: var(--karte-bg);
+  border: 1px solid var(--karte-rand);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.kennzahl-wert {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.kennzahl-label {
+  color: var(--text-gedimmt);
+  font-size: 0.85rem;
+}
+
+.legende {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.2rem;
+  margin: 0.8rem 0 1.2rem;
+  font-size: 0.9rem;
+}
+
+.legende-eintrag {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* --- Verpackungskarten (Issues #22, #23, #36) --- */
+
+.karten-raster {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
+  gap: 1.2rem;
+}
+
+.einheit-karte {
+  background: var(--karte-bg);
+  border: 1px solid var(--karte-rand);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.einheit-karte:hover {
+  border-color: var(--akzent);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.12);
+}
+
+.einheit-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+}
+
+.einheit-kopf h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.einheit-fakten {
+  color: var(--text-gedimmt);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.ansichten {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.ansicht-gruppe {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.ansicht-gruppe h4 {
+  margin: 0.4rem 0;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-gedimmt);
+}
+
+.lagen-reihe {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.lage-figur {
+  margin: 0;
+  flex: 0 1 160px;
+  min-width: 110px;
+}
+
+.lage-figur figcaption {
+  font-size: 0.8rem;
+  color: var(--text-gedimmt);
+  text-align: center;
+  margin-top: 0.25rem;
+}
+
+.plan-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: color-mix(in srgb, var(--karte-rand) 25%, transparent);
+  border-radius: 6px;
+}
+
+.verpackung-umriss {
+  fill: none;
+  stroke: var(--text-gedimmt);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.schwerpunkt-marker circle,
+.schwerpunkt-marker line {
+  fill: none;
+  stroke: #dc2626;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.einheit-masse {
+  color: var(--text-gedimmt);
+  font-size: 0.8rem;
+  margin: 0.6rem 0 0;
+}
+
+/* --- Tooltip (Issue #27) --- */
+
+.tooltip {
+  position: fixed;
+  z-index: 10;
+  background: #1e293b;
+  color: #f1f5f9;
+  border-radius: 8px;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  pointer-events: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  max-width: 260px;
+}
+
+/* --- Responsiv für Tablet (Issue #28) --- */
+
+@media (max-width: 900px) {
+  .ansichten {
+    flex-direction: column;
+  }
+
+  .karten-raster {
+    grid-template-columns: 1fr;
+  }
 }
