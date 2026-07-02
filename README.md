@@ -36,12 +36,16 @@ Pflichtspalten: `artikel_id`, `bezeichnung`, `laenge_mm`, `breite_mm`, `hoehe_mm
 
 ### Variante A: Start-Skript (ohne Docker)
 
-**Windows (PowerShell):**
+**macOS:** Doppelklick auf `Verpackungskonfigurator starten.command` — startet beides und
+öffnet automatisch den Browser. Das Terminal-Fenster während der Nutzung offen lassen.
+
+**Windows:** Doppelklick auf `start.bat` (oder in der Eingabeaufforderung ausführen).
+Alternativ in PowerShell:
 ```powershell
 ./start.ps1
 ```
 
-**macOS/Linux/Git Bash:**
+**Linux/Git Bash:**
 ```bash
 ./start.sh
 ```
