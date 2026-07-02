@@ -36,7 +36,8 @@ Pflichtspalten: `artikel_id`, `bezeichnung`, `laenge_mm`, `breite_mm`, `hoehe_mm
 
 ### Variante A: Start-Skript (ohne Docker)
 
-**Windows (PowerShell):**
+**Windows:** Doppelklick auf `start.bat` (oder in der Eingabeaufforderung ausführen).
+Alternativ in PowerShell:
 ```powershell
 ./start.ps1
 ```
