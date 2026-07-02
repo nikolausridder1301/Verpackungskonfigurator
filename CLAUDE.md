@@ -38,8 +38,9 @@ CI: `.github/workflows/tests.yml` läuft bei jedem Push (Backend-pytest + Fronte
 
 ## Architektur
 
-- **backend/** — Python 3.13 / FastAPI. `app/main.py` (API-Endpoints, CORS für localhost:5173), `app/config.py` (lädt und validiert `data/packaging_catalog.yaml` beim Start, Fehler = SystemExit), `app/models.py` (Pydantic-Modelle `Artikel`, `Verpackung`). Der Packalgorithmus (Greedy/First-Fit-Decreasing, siehe SPEC 5.2–5.3) ist noch nicht implementiert — er gehört als eigenes Modul unabhängig von FastAPI, damit er ohne API testbar bleibt.
-- **frontend/** — React 19 (Vite) + TypeScript. Kommuniziert mit dem Backend über REST (`API_BASE = http://localhost:8000` in `App.tsx`). Visualisierung ist als reines SVG geplant (Drauf-/Seitenansicht), kein Canvas/3D.
+- **backend/** — Python 3.13 / FastAPI. `app/main.py` (API-Endpoints `/health`, `/packaging-catalog`, `/upload`, `/calculate`; CORS für localhost:5173; 30s-Berechnungs-Timeout), `app/config.py` (lädt und validiert `data/packaging_catalog.yaml` inkl. Toleranz beim Start, Fehler = SystemExit), `app/models.py` (Pydantic-Modelle `Artikel`, `Verpackung`, `Toleranz`), `app/parsing.py` (CSV/XLSX-Parsing mit zeilenbezogenen Fehlermeldungen), `app/packer.py` (Packalgorithmus: Greedy/First-Fit-Decreasing mit Lagenbildung, Rotation, Schwerpunkt- und Zerbrechlichkeits-Prüfung — bewusst unabhängig von FastAPI, damit er ohne API testbar bleibt).
+- **frontend/** — React 19 (Vite) + TypeScript. Kommuniziert mit dem Backend über REST (`API_BASE` in `src/api.ts`). Ablauf in `App.tsx`: Upload → Vorschau → Berechnung → Ergebnis; SVG-Visualisierung (Drauf-/Seitenansicht) in `src/components/PackeinheitKarte.tsx`, kein Canvas/3D.
+- **beispiele/demo_sendung.csv** — Beispieldatei für Onboarding und Integrationstests.
 - **backend/data/packaging_catalog.yaml** — Verpackungsstammdaten (Kartons/Paletten), einzige Konfigurationsquelle; Änderungen greifen nach Backend-Neustart. YAML-Keys nutzen deutsche Umlaute (`innenmaße_mm`), das Pydantic-Modell mappt auf `innenmasse_mm`.
 - Sendungsdaten (CSV/XLSX-Upload) sind bewusst nicht persistent — nur pro Berechnung im Speicher.
 

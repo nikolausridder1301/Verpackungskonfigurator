@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from app.config import CATALOG_PATH, ConfigError, load_packaging_catalog
+from app.config import CATALOG_PATH, ConfigError, load_config, load_packaging_catalog
 
 
 def write_yaml(tmp_path: Path, content: str) -> Path:
@@ -65,7 +65,7 @@ def test_unvollständiger_eintrag_wirft_config_error(tmp_path):
         load_packaging_catalog(path)
 
 
-def test_gültiger_minimaler_eintrag(tmp_path):
+def test_karton_ohne_innenmasse_wirft_config_error(tmp_path):
     path = write_yaml(
         tmp_path,
         """
@@ -75,7 +75,68 @@ def test_gültiger_minimaler_eintrag(tmp_path):
   max_zuladung_kg: 5
 """,
     )
+    with pytest.raises(ConfigError, match="innenmaße_mm"):
+        load_packaging_catalog(path)
+
+def test_gültiger_minimaler_karton_mit_innenmassen(tmp_path):
+    path = write_yaml(
+        tmp_path,
+        """
+- id: mini
+  typ: karton
+  kosten_eur: 0.5
+  max_zuladung_kg: 5
+  innenmaße_mm: {laenge: 100, breite: 80, hoehe: 60}
+""",
+    )
     katalog = load_packaging_catalog(path)
     assert len(katalog) == 1
     assert katalog[0].id == "mini"
-    assert katalog[0].innenmasse_mm is None
+    assert katalog[0].max_hoehe_mm == 60
+
+
+def test_toleranz_wird_aus_config_gelesen(tmp_path):
+    path = write_yaml(
+        tmp_path,
+        """
+toleranz:
+  absolut_mm: 3
+  relativ_prozent: 2
+verpackungen:
+  - id: mini
+    typ: karton
+    kosten_eur: 0.5
+    max_zuladung_kg: 5
+    innenmaße_mm: {laenge: 100, breite: 80, hoehe: 60}
+""",
+    )
+    config = load_config(path)
+    assert config.toleranz.absolut_mm == 3
+    assert config.toleranz.relativ_prozent == 2
+    # Aufmaß: Maximum aus absolut und relativ
+    assert config.toleranz.aufmass_mm(100) == 3      # 2% von 100 = 2 < 3
+    assert config.toleranz.aufmass_mm(400) == 8      # 2% von 400 = 8 > 3
+
+
+def test_toleranz_default_ohne_angabe():
+    config = load_config(CATALOG_PATH)
+    assert config.toleranz.absolut_mm == 2
+    assert config.toleranz.relativ_prozent == 1
+
+
+def test_negative_toleranz_wirft_config_error(tmp_path):
+    path = write_yaml(
+        tmp_path,
+        """
+toleranz:
+  absolut_mm: -1
+verpackungen:
+  - id: mini
+    typ: karton
+    kosten_eur: 0.5
+    max_zuladung_kg: 5
+    innenmaße_mm: {laenge: 100, breite: 80, hoehe: 60}
+""",
+    )
+    with pytest.raises(ConfigError, match="negativ"):
+        load_config(path)
