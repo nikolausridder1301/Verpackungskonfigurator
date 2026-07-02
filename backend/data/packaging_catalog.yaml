@@ -1,0 +1,20 @@
+- id: karton_s
+  typ: karton
+  innenmaße_mm: {laenge: 200, breite: 150, hoehe: 100}
+  eigengewicht_kg: 0.3
+  max_zuladung_kg: 15
+  kosten_eur: 1.20
+
+- id: karton_m
+  typ: karton
+  innenmaße_mm: {laenge: 400, breite: 300, hoehe: 250}
+  eigengewicht_kg: 0.6
+  max_zuladung_kg: 25
+  kosten_eur: 2.10
+
+- id: euro_palette
+  typ: palette
+  grundflaeche_mm: {laenge: 1200, breite: 800}
+  max_stapelhoehe_mm: 1800
+  max_zuladung_kg: 500
+  kosten_eur: 8.00
